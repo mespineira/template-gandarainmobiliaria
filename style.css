@@ -1,0 +1,628 @@
+/*
+Theme Name: Gandara Estate
+Theme URI: https://example.com/gandara-estate
+Author: Tu Agencia
+Author URI: https://example.com
+Description: Tema inmobiliario clásico, integración con Real Estate Pro (propiedades, buscador, mapa). Customizer: teléfono, WhatsApp, color principal, hero de inicio.
+Version: 1.1.0
+Requires at least: 5.8
+Tested up to: 6.5
+Requires PHP: 7.3
+Text Domain: gandara-estate
+License: GPLv2 or later
+*/
+
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Variables
+# Global Styles
+# Accessibility
+# Layout & Container
+# Header
+  ## Top Bar
+  ## Main Header & Navigation
+# Hero Section
+# Main Content & Sections
+# Buttons & Links
+# WordPress Core
+# Plugins (Real Estate Pro)
+  ## Filters / Search Form
+  ## Property List / Cards
+# Blog
+# Footer
+# Responsive Design
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+# Variables
+--------------------------------------------------------------*/
+:root {
+	--ge-primary-color: #0e7b6c; /* Se sobreescribe desde functions.php */
+	--ge-dark-color: #1a202c;
+	--ge-light-dark-color: #2d3748;
+	--ge-text-color: #4a5568;
+	--ge-light-text-color: #718096;
+	--ge-bg-light-gray: #f7fafc;
+	--ge-border-color: #e2e8f0;
+	--ge-white: #ffffff;
+	--ge-font-family: 'Raleway', sans-serif;
+	--ge-container-width: 1200px;
+	--ge-header-height: 80px;
+}
+
+/*--------------------------------------------------------------
+# Global Styles
+--------------------------------------------------------------*/
+*, *::before, *::after {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: var(--ge-font-family);
+	color: var(--ge-text-color);
+	background-color: var(--ge-white);
+	line-height: 1.6;
+	font-size: 16px;
+	margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: var(--ge-dark-color);
+	font-weight: 600;
+	line-height: 1.2;
+	margin: 0 0 1rem;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+
+p {
+	margin: 0 0 1rem;
+}
+
+a {
+	color: var(--ge-primary-color);
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+a:hover, a:focus {
+	color: var(--ge-dark-color);
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	vertical-align: middle;
+}
+
+/*--------------------------------------------------------------
+# Accessibility
+--------------------------------------------------------------*/
+.ge-sr-only {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	-webkit-clip-path: inset(50%);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute !important;
+	width: 1px;
+	word-wrap: normal !important;
+}
+
+
+/*--------------------------------------------------------------
+# Layout & Container
+--------------------------------------------------------------*/
+.ge-container {
+	max-width: var(--ge-container-width);
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.ge-container--flex {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.ge-container--narrow {
+    max-width: 800px;
+}
+
+.ge-main {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+/*--------------------------------------------------------------
+# Header
+--------------------------------------------------------------*/
+.ge-header {
+	background-color: var(--ge-white);
+	box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ## Top Bar */
+.ge-topbar {
+	background-color: var(--ge-light-dark-color);
+	color: var(--ge-white);
+	padding: 8px 0;
+	font-size: 0.9rem;
+}
+
+.ge-topbar a {
+	color: var(--ge-white);
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+.ge-topbar a:hover {
+	opacity: 0.8;
+}
+
+.ge-topbar__social {
+	display: flex;
+	gap: 15px;
+}
+.ge-topbar__social svg {
+	width: 20px;
+	height: 20px;
+}
+
+.ge-topbar__contact {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+.ge-topbar__contact .ge-phone svg {
+	width: 16px;
+	height: 16px;
+}
+
+/* ## Main Header & Navigation */
+.ge-main-header .ge-container--flex {
+	height: var(--ge-header-height);
+}
+
+.ge-main-header__logo .custom-logo {
+	max-height: 50px;
+	width: auto;
+}
+.ge-site-title {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: var(--ge-dark-color);
+}
+
+.ge-menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	gap: 25px;
+}
+.ge-menu a {
+	color: var(--ge-dark-color);
+	font-weight: 600;
+	text-transform: uppercase;
+	font-size: 0.9rem;
+	padding: 10px 0;
+	position: relative;
+}
+.ge-menu a::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background-color: var(--ge-primary-color);
+	transition: width 0.3s ease;
+}
+.ge-menu a:hover::after,
+.ge-menu .current-menu-item > a::after {
+	width: 100%;
+}
+
+.ge-nav__toggle {
+	display: none; /* Oculto en escritorio */
+	background: none;
+	border: none;
+	padding: 10px;
+	cursor: pointer;
+}
+
+/*--------------------------------------------------------------
+# Hero Section
+--------------------------------------------------------------*/
+.ge-hero {
+	background-size: cover;
+	background-position: center;
+	color: var(--ge-white);
+	padding: 100px 0;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+.ge-hero__overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.5);
+}
+.ge-hero__inner {
+	position: relative;
+	z-index: 2;
+	width: 100%;
+}
+.ge-hero h1 {
+	color: var(--ge-white);
+	font-size: 3rem;
+	margin-bottom: 2rem;
+}
+.ge-hero__search {
+	background-color: rgba(255, 255, 255, 0.9);
+	padding: 20px;
+	border-radius: 8px;
+	margin-top: 2rem;
+	max-width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/*--------------------------------------------------------------
+# Main Content & Sections
+--------------------------------------------------------------*/
+.ge-section {
+	padding: 60px 0;
+}
+.ge-section--light-bg {
+    background-color: var(--ge-bg-light-gray);
+}
+.ge-section__header {
+	margin-bottom: 40px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.ge-section__header h2 {
+	margin-bottom: 0;
+}
+.ge-section--cta {
+    text-align: center;
+    color: var(--ge-white);
+    position: relative;
+}
+.ge-section--cta h2 {
+    color: var(--ge-white);
+    margin-bottom: 1rem;
+}
+.ge-section--cta .ge-btn {
+    margin-top: 1rem;
+}
+
+.ge-services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    text-align: center;
+}
+.ge-service-item__icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+/*--------------------------------------------------------------
+# Buttons & Links
+--------------------------------------------------------------*/
+.ge-btn {
+	display: inline-block;
+	background-color: var(--ge-primary-color);
+	color: var(--ge-white);
+	padding: 12px 25px;
+	border-radius: 5px;
+	font-weight: 600;
+	text-transform: uppercase;
+	font-size: 0.9rem;
+	transition: background-color 0.2s ease, transform 0.2s ease;
+	border: 2px solid transparent;
+}
+.ge-btn:hover {
+	background-color: var(--ge-dark-color);
+	color: var(--ge-white);
+	transform: translateY(-2px);
+}
+.ge-btn--sm {
+	padding: 8px 15px;
+	font-size: 0.8rem;
+}
+.ge-btn--outline-white {
+    background-color: transparent;
+    border-color: var(--ge-white);
+    color: var(--ge-white);
+}
+.ge-btn--outline-white:hover {
+    background-color: var(--ge-white);
+    color: var(--ge-dark-color);
+}
+.ge-link {
+	font-weight: 600;
+}
+
+/*--------------------------------------------------------------
+# WordPress Core
+--------------------------------------------------------------*/
+.alignwide {
+	margin-left: -100px;
+	margin-right: -100px;
+	max-width: calc(100% + 200px);
+}
+.alignfull {
+	margin-left: calc(50% - 50vw);
+	margin-right: calc(50% - 50vw);
+	max-width: 100vw;
+}
+
+/*--------------------------------------------------------------
+# Plugins (Real Estate Pro)
+--------------------------------------------------------------*/
+/* ## Filters / Search Form */
+.rep-filters-wrap form {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 15px;
+	align-items: flex-end;
+}
+.rep-filters-wrap .rep-filter {
+	text-align: left;
+}
+.rep-filters-wrap label {
+	color: var(--ge-dark-color);
+	font-weight: 600;
+	font-size: 0.9rem;
+	display: block;
+	margin-bottom: 5px;
+}
+.rep-filters-wrap input,
+.rep-filters-wrap select {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(--ge-border-color);
+	border-radius: 5px;
+}
+.rep-filters-wrap .rep-submit input {
+	width: 100%;
+	background-color: var(--ge-primary-color);
+	color: var(--ge-white);
+	border: none;
+	cursor: pointer;
+	font-weight: 600;
+	padding: 12px;
+	transition: background-color 0.2s;
+}
+.rep-filters-wrap .rep-submit input:hover {
+	background-color: var(--ge-dark-color);
+}
+
+/* ## Property List / Cards */
+.rep-properties-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+	gap: 30px;
+}
+.rep-property-card {
+	border: 1px solid var(--ge-border-color);
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.rep-property-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+.rep-property-card__image {
+	position: relative;
+}
+.rep-property-card__image a {
+	display: block;
+}
+.rep-property-card__image img {
+	width: 100%;
+	height: 250px;
+	object-fit: cover;
+	display: block;
+}
+.rep-property-card__price {
+	position: absolute;
+	top: 15px;
+	left: 15px;
+	background-color: var(--ge-primary-color);
+	color: var(--ge-white);
+	padding: 5px 12px;
+	border-radius: 5px;
+	font-weight: 700;
+}
+.rep-property-card__content {
+	padding: 20px;
+}
+.rep-property-card__title {
+	font-size: 1.2rem;
+	margin: 0 0 10px;
+}
+.rep-property-card__title a {
+	color: var(--ge-dark-color);
+}
+.rep-property-card__location {
+	color: var(--ge-light-text-color);
+	margin-bottom: 15px;
+}
+.rep-property-card__meta {
+	display: flex;
+	gap: 20px;
+	color: var(--ge-text-color);
+	border-top: 1px solid var(--ge-border-color);
+	padding-top: 15px;
+	font-size: 0.9rem;
+}
+
+/*--------------------------------------------------------------
+# Blog
+--------------------------------------------------------------*/
+.ge-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+.ge-post-card {
+    background-color: var(--ge-white);
+    border: 1px solid var(--ge-border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.ge-post-card__image-link img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+.ge-post-card__content {
+    padding: 20px;
+}
+.ge-post-card__title {
+    font-size: 1.2rem;
+    margin: 0 0 10px;
+}
+.ge-post-card__title a {
+    color: var(--ge-dark-color);
+}
+.ge-post-card__excerpt {
+    font-size: 0.9rem;
+    color: var(--ge-light-text-color);
+}
+
+
+/*--------------------------------------------------------------
+# Footer
+--------------------------------------------------------------*/
+.ge-footer {
+	background-color: var(--ge-dark-color);
+	color: #a0aec0;
+	padding-top: 60px;
+}
+.ge-footer__widgets {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr;
+	gap: 40px;
+	padding-bottom: 40px;
+}
+.ge-footer .widget {
+	margin-bottom: 0;
+}
+.ge-footer .widget__title {
+	color: var(--ge-white);
+	font-size: 1.1rem;
+	margin-bottom: 20px;
+	text-transform: uppercase;
+}
+.ge-footer a {
+	color: #a0aec0;
+}
+.ge-footer a:hover {
+	color: var(--ge-white);
+}
+.ge-footer-logo {
+	max-width: 180px;
+	margin-bottom: 20px;
+}
+.ge-footer-contact p {
+	margin-bottom: 0.5rem;
+}
+.ge-menu-footer {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.ge-menu-footer li {
+	margin-bottom: 10px;
+}
+
+.ge-sub-footer {
+	background-color: #11151c;
+	padding: 20px 0;
+	font-size: 0.9rem;
+}
+.ge-sub-footer .ge-container--flex {
+	justify-content: space-between;
+}
+.ge-sub-footer p {
+	margin: 0;
+}
+.ge-legal-menu {
+    display: flex;
+    gap: 15px;
+    margin-top: 5px;
+}
+.ge-legal-menu a {
+    font-size: 0.8rem;
+}
+
+/*--------------------------------------------------------------
+# Responsive Design
+--------------------------------------------------------------*/
+@media (max-width: 992px) {
+	.ge-menu {
+		display: none; /* Ocultar menú en móvil */
+		flex-direction: column;
+		position: absolute;
+		top: calc(var(--ge-header-height) + 41px);
+		left: 0;
+		width: 100%;
+		background-color: var(--ge-white);
+		padding: 20px;
+		box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+	}
+	.ge-menu.is-active {
+		display: flex;
+	}
+	.ge-nav__toggle {
+		display: block; /* Mostrar botón hamburguesa */
+	}
+    .ge-footer__widgets {
+        grid-template-columns: 1fr;
+    }
+    .ge-services-grid, .ge-posts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+	h1 { font-size: 2rem; }
+	h2 { font-size: 1.75rem; }
+	.ge-hero h1 { font-size: 2.2rem; }
+    
+    .ge-topbar .ge-container--flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .ge-sub-footer .ge-container--flex {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    .rep-filters-wrap form {
+        grid-template-columns: 1fr;
+    }
+}
