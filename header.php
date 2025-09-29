@@ -50,21 +50,37 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 					<a class="ge-site-title" href="<?php echo esc_url( home_url('/') ); ?>"><?php bloginfo('name'); ?></a>
 				<?php } ?>
 			</div>
-			<nav class="ge-nav" aria-label="<?php esc_attr_e( 'Menú principal', 'gandara-estate' ); ?>">
-				<button class="ge-nav__toggle" aria-expanded="false" aria-controls="ge-menu">
-					<i class="fas fa-bars"></i>
-					<span class="ge-sr-only"><?php esc_html_e( 'Menú', 'gandara-estate' ); ?></span>
-				</button>
+			<nav class="ge-nav-desktop" aria-label="<?php esc_attr_e( 'Menú principal', 'gandara-estate' ); ?>">
 				<?php
 				wp_nav_menu(array(
 					'theme_location' => 'primary',
-					'menu_id'        => 'ge-menu',
 					'container'      => false,
 					'menu_class'     => 'ge-menu'
 				));
 				?>
 			</nav>
+            <button class="ge-nav-mobile-toggle" aria-expanded="false" aria-controls="ge-mobile-menu-overlay">
+                <i class="fas fa-bars"></i>
+                <span class="ge-sr-only"><?php esc_html_e( 'Menú', 'gandara-estate' ); ?></span>
+            </button>
 		</div>
 	</div>
 </header>
+
+<div id="ge-mobile-menu-overlay" class="ge-mobile-menu-overlay" aria-hidden="true">
+    <button class="ge-mobile-menu__close">
+        <i class="fas fa-times"></i>
+        <span class="ge-sr-only"><?php esc_html_e('Cerrar menú', 'gandara-estate'); ?></span>
+    </button>
+    <nav class="ge-mobile-menu" aria-label="<?php esc_attr_e('Menú móvil', 'gandara-estate'); ?>">
+        <?php
+        wp_nav_menu(array(
+            'theme_location' => 'primary',
+            'container' => false,
+            'menu_class' => 'ge-menu--mobile'
+        ));
+        ?>
+    </nav>
+</div>
+
 <main class="ge-main">

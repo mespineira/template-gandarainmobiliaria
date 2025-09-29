@@ -4,7 +4,7 @@ Theme URI: https://example.com/gandara-estate
 Author: Tu Agencia
 Author URI: https://example.com
 Description: Tema inmobiliario clásico, integración con Real Estate Pro (propiedades, buscador, mapa). Customizer: teléfono, WhatsApp, color principal, hero de inicio.
-Version: 1.1.1
+Version: 1.1.2
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.3
@@ -65,6 +65,10 @@ body {
 	line-height: 1.6;
 	font-size: 16px;
 	margin: 0;
+}
+
+body.mobile-menu-open {
+    overflow: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -162,7 +166,7 @@ body.header-sticky .ge-header {
     transform: translateY(0);
 }
 body.header-sticky {
-    padding-top: var(--ge-header-height); /* Evita que el contenido salte */
+    padding-top: calc(var(--ge-header-height) + 41px); /* Ajustado para el topbar */
 }
 
 
@@ -209,7 +213,7 @@ body.header-sticky {
 }
 
 .ge-main-header__logo .custom-logo {
-	max-height: 70px; /* Aumentamos la altura máxima del logo */
+	max-height: 70px;
 	width: auto;
 }
 .ge-site-title {
@@ -248,7 +252,7 @@ body.header-sticky {
 	width: 100%;
 }
 
-.ge-nav__toggle {
+.ge-nav-mobile-toggle {
 	display: none;
 	background: none;
 	border: none;
@@ -256,6 +260,67 @@ body.header-sticky {
 	cursor: pointer;
     font-size: 1.5rem;
     color: var(--ge-dark-color);
+    z-index: 1002;
+}
+
+.ge-mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--ge-white);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.ge-mobile-menu-overlay.is-active {
+    transform: translateX(0);
+}
+.ge-mobile-menu__close {
+    position: absolute;
+    top: 30px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--ge-dark-color);
+    cursor: pointer;
+}
+.ge-menu--mobile {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+.ge-menu--mobile li {
+    margin-bottom: 20px;
+}
+.ge-menu--mobile a {
+    font-size: 1.8rem;
+    color: var(--ge-dark-color);
+    font-weight: 700;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 5px;
+}
+.ge-menu--mobile a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--ge-primary-color);
+    transition: width 0.3s ease;
+}
+.ge-menu--mobile a:hover::after,
+.ge-menu--mobile .current-menu-item > a::after {
+    width: 100%;
 }
 
 /*--------------------------------------------------------------
@@ -600,30 +665,10 @@ body.header-sticky {
 # Responsive Design
 --------------------------------------------------------------*/
 @media (max-width: 992px) {
-	.ge-main-header .ge-container--flex {
-        position: relative;
+	.ge-nav-desktop {
+        display: none;
     }
-    .ge-nav {
-        display: flex;
-        justify-content: flex-end;
-    }
-	.ge-menu {
-		display: none;
-		flex-direction: column;
-		position: absolute;
-		top: var(--ge-header-height);
-		left: 0;
-		width: 100%;
-		background-color: var(--ge-white);
-		padding: 20px;
-		box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        z-index: 999;
-        border-top: 1px solid var(--ge-border-color);
-	}
-	.ge-menu.is-active {
-		display: flex;
-	}
-	.ge-nav__toggle {
+	.ge-nav-mobile-toggle {
 		display: block;
 	}
     .ge-footer__widgets {
@@ -652,3 +697,4 @@ body.header-sticky {
         grid-template-columns: 1fr;
     }
 }
+
