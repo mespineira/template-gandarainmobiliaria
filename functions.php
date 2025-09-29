@@ -9,8 +9,8 @@ add_action( 'after_setup_theme', function(){
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
 	add_theme_support( 'custom-logo', array(
-		'height'      => 60,
-		'width'       => 220,
+		'height'      => 100, // Aumentamos la altura permitida
+		'width'       => 300, // Aumentamos la anchura permitida
 		'flex-width'  => true,
 		'flex-height' => true,
 	) );
@@ -25,25 +25,25 @@ add_action( 'after_setup_theme', function(){
 
 	// Tamaños de imagen personalizados
 	add_image_size( 'property-card', 600, 400, true );
+
+    // Eliminar el recorte de la imagen del logo para evitar pixelación
+    add_filter('get_custom_logo', function($html) {
+        return preg_replace('/(width|height)="\d*"\s/', "", $html);
+    });
+
 } );
 
 /**
  * Encolar Scripts y Estilos
  */
 add_action( 'wp_enqueue_scripts', function(){
-	// En lugar de /assets/css/theme.css, usamos el style.css principal.
-	wp_enqueue_style( 'gandara-theme-style', get_stylesheet_uri(), array(), '1.1.0' );
-
-	// Google Fonts - Raleway, similar a la de referencia
+	wp_enqueue_style( 'gandara-theme-style', get_stylesheet_uri(), array(), '1.1.1' );
 	wp_enqueue_style( 'gandara-fonts', 'https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap', array(), null );
-
-	// Dejamos el JS por si se necesita en el futuro para interactividad (ej. header sticky)
-	// wp_enqueue_script( 'gandara-theme', get_template_directory_uri() . '/assets/js/theme.js', array(), '1.0.1', true );
+	wp_enqueue_script( 'gandara-theme', get_template_directory_uri() . '/assets/js/theme.js', array(), '1.1.1', true );
 } );
 
 /**
  * Registro de Áreas de Widgets (Sidebars)
- * Ampliamos las áreas del footer para replicar el diseño de la web de referencia.
  */
 add_action( 'widgets_init', function(){
 	register_sidebar(array(
@@ -75,7 +75,6 @@ add_action( 'widgets_init', function(){
 
 /**
  * Personalizador de WordPress (Customizer)
- * Añadimos más opciones para controlar la identidad y redes sociales.
  */
 add_action( 'customize_register', function( $wp_customize ){
 	$wp_customize->add_section( 'ge_brand', array(
@@ -126,7 +125,6 @@ function ge_opt( $key, $default = '' ){
 
 /**
  * Generar CSS dinámico desde el Personalizador
- * Inyectamos el color principal en el head.
  */
 add_action('wp_head', function(){
     $primary_color = ge_opt('ge_primary_color', '#0e7b6c');
@@ -141,7 +139,6 @@ add_action('wp_head', function(){
 
 /**
  * Breadcrumbs (Migas de pan)
- * Mantenemos esta función útil.
  */
 function ge_breadcrumbs(){
 	if ( is_front_page() ) return;

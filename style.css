@@ -4,7 +4,7 @@ Theme URI: https://example.com/gandara-estate
 Author: Tu Agencia
 Author URI: https://example.com
 Description: Tema inmobiliario clásico, integración con Real Estate Pro (propiedades, buscador, mapa). Customizer: teléfono, WhatsApp, color principal, hero de inicio.
-Version: 1.1.0
+Version: 1.1.1
 Requires at least: 5.8
 Tested up to: 6.5
 Requires PHP: 7.3
@@ -48,7 +48,7 @@ License: GPLv2 or later
 	--ge-white: #ffffff;
 	--ge-font-family: 'Raleway', sans-serif;
 	--ge-container-width: 1200px;
-	--ge-header-height: 80px;
+	--ge-header-height: 90px;
 }
 
 /*--------------------------------------------------------------
@@ -149,7 +149,22 @@ img {
 .ge-header {
 	background-color: var(--ge-white);
 	box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
 }
+
+/* Header Sticky */
+body.header-sticky .ge-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transform: translateY(0);
+}
+body.header-sticky {
+    padding-top: var(--ge-header-height); /* Evita que el contenido salte */
+}
+
 
 /* ## Top Bar */
 .ge-topbar {
@@ -194,7 +209,7 @@ img {
 }
 
 .ge-main-header__logo .custom-logo {
-	max-height: 50px;
+	max-height: 70px; /* Aumentamos la altura máxima del logo */
 	width: auto;
 }
 .ge-site-title {
@@ -234,11 +249,13 @@ img {
 }
 
 .ge-nav__toggle {
-	display: none; /* Oculto en escritorio */
+	display: none;
 	background: none;
 	border: none;
 	padding: 10px;
 	cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--ge-dark-color);
 }
 
 /*--------------------------------------------------------------
@@ -583,22 +600,31 @@ img {
 # Responsive Design
 --------------------------------------------------------------*/
 @media (max-width: 992px) {
+	.ge-main-header .ge-container--flex {
+        position: relative;
+    }
+    .ge-nav {
+        display: flex;
+        justify-content: flex-end;
+    }
 	.ge-menu {
-		display: none; /* Ocultar menú en móvil */
+		display: none;
 		flex-direction: column;
 		position: absolute;
-		top: calc(var(--ge-header-height) + 41px);
+		top: var(--ge-header-height);
 		left: 0;
 		width: 100%;
 		background-color: var(--ge-white);
 		padding: 20px;
 		box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 999;
+        border-top: 1px solid var(--ge-border-color);
 	}
 	.ge-menu.is-active {
 		display: flex;
 	}
 	.ge-nav__toggle {
-		display: block; /* Mostrar botón hamburguesa */
+		display: block;
 	}
     .ge-footer__widgets {
         grid-template-columns: 1fr;

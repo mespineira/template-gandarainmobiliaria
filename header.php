@@ -5,6 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 <head>
 <meta charset="<?php bloginfo('charset'); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
@@ -14,7 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	<div class="ge-topbar">
 		<div class="ge-container ge-container--flex">
 			<div class="ge-topbar__social">
-				<?php // Iconos de redes sociales (requiere SVGs o una fuente de iconos) ?>
 				<?php if ( $facebook_url = ge_opt('ge_facebook') ) : ?>
 					<a href="<?php echo esc_url($facebook_url); ?>" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M14 13.5H16.5L17.5 9.5H14V7.5C14 6.47 14 5.5 16 5.5H17.5V2.14C17.174 2.097 15.943 2 14.643 2C11.928 2 10 3.657 10 6.7V9.5H7V13.5H10V22H14V13.5Z"/></svg>
@@ -38,7 +38,6 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 						<span><?php echo esc_html($phone); ?></span>
 					</a>
 				<?php endif; ?>
-				<?php // Hecho como un enlace simple, necesitará una página de Contacto creada. ?>
 				<a class="ge-btn ge-btn--sm" href="<?php echo esc_url( home_url('/contacto') ); ?>"><?php esc_html_e('Contacto', 'gandara-estate'); ?></a>
 			</div>
 		</div>
@@ -53,7 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 			</div>
 			<nav class="ge-nav" aria-label="<?php esc_attr_e( 'Menú principal', 'gandara-estate' ); ?>">
 				<button class="ge-nav__toggle" aria-expanded="false" aria-controls="ge-menu">
-					<span class="ge-nav__toggle-icon"></span>
+					<i class="fas fa-bars"></i>
 					<span class="ge-sr-only"><?php esc_html_e( 'Menú', 'gandara-estate' ); ?></span>
 				</button>
 				<?php
