@@ -83,4 +83,22 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
     </nav>
 </div>
 
+<?php
+// Muestra la cabecera de página si no es la portada y tiene imagen destacada.
+if ( ! is_front_page() && has_post_thumbnail() ) :
+    $slogan = get_post_meta( get_the_ID(), '_ge_header_slogan', true );
+?>
+<div class="ge-page-header">
+    <?php the_post_thumbnail('page-header'); ?>
+    <div class="ge-page-header__overlay"></div>
+    <?php if ( ! empty( $slogan ) ) : ?>
+        <div class="ge-page-header__slogan">
+            <div class="ge-container">
+                <h2><?php echo esc_html( $slogan ); ?></h2>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
+
 <main class="ge-main">
