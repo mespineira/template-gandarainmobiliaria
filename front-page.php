@@ -32,7 +32,7 @@ for ( $i = 1; $i <= 5; $i++ ) {
                         <?php endif; ?>
                     </div>
                     <div class="ge-hero__search">
-                        <?php echo do_shortcode('[rep_filters]'); ?>
+                        <?php echo do_shortcode('[rep_filters style="hero"]'); ?>
                     </div>
                 </div>
             </div>
@@ -46,11 +46,11 @@ for ( $i = 1; $i <= 5; $i++ ) {
     <?php else: 
         // Fallback si no hay slides configurados, muestra el buscador sobre un fondo genérico
     ?>
-    <div class="ge-hero-fallback">
+    <div class="ge-hero-fallback" style="background-image:url('<?php echo get_template_directory_uri() . '/assets/images/hero-default.jpg'; ?>')">
         <div class="ge-hero__overlay"></div>
         <div class="ge-hero__inner ge-container">
              <div class="ge-hero__search">
-                <?php echo do_shortcode('[rep_filters]'); ?>
+                <?php echo do_shortcode('[rep_filters style="hero"]'); ?>
             </div>
         </div>
     </div>
