@@ -48,7 +48,7 @@ License: GPLv2 or later
 	--ge-white: #ffffff;
 	--ge-font-family: 'Raleway', sans-serif;
 	--ge-container-width: 1200px;
-	--ge-header-height: 90px;
+	--ge-header-height: auto; /* Cambiado a auto para que sea flexible */
 }
 
 /*--------------------------------------------------------------
@@ -153,10 +153,10 @@ img {
 .ge-header {
 	background-color: var(--ge-white);
 	box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Header Sticky */
+/* Header Sticky - INICIO DE MODIFICACIONES */
 body.header-sticky .ge-header {
     position: fixed;
     top: 0;
@@ -164,10 +164,24 @@ body.header-sticky .ge-header {
     width: 100%;
     z-index: 1000;
     transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Sombra más pronunciada */
 }
+
 body.header-sticky {
-    padding-top: calc(var(--ge-header-height) + 41px); /* Ajustado para el topbar */
+    /* El padding-top debe coincidir con la nueva altura del header sticky */
+    padding-top: 90px;
 }
+
+/* Ocultar la barra superior en modo sticky */
+body.header-sticky .ge-topbar {
+    display: none;
+}
+
+/* Reducir la altura del header principal en modo sticky */
+body.header-sticky .ge-main-header {
+    height: 90px;
+}
+/* FIN DE MODIFICACIONES */
 
 
 /* ## Top Bar */
@@ -176,6 +190,7 @@ body.header-sticky {
 	color: var(--ge-white);
 	padding: 8px 0;
 	font-size: 0.9rem;
+	transition: all 0.3s ease; /* Transición para ocultado suave */
 }
 
 .ge-topbar a {
@@ -208,14 +223,25 @@ body.header-sticky {
 }
 
 /* ## Main Header & Navigation */
+.ge-main-header {
+	transition: height 0.3s ease-in-out; /* Añadimos transición para el cambio de altura */
+}
+
 .ge-main-header .ge-container--flex {
-	height: var(--ge-header-height);
+	height: 100%; /* Ocupa toda la altura de su padre */
+	min-height: 90px; /* Altura mínima por defecto */
 }
 
 .ge-main-header__logo .custom-logo {
 	max-height: 70px;
 	width: auto;
+	transition: max-height 0.3s ease;
 }
+
+body.header-sticky .ge-main-header__logo .custom-logo {
+	max-height: 60px; /* Opcional: reducir un poco el logo */
+}
+
 .ge-site-title {
 	font-size: 1.5rem;
 	font-weight: 700;
@@ -758,4 +784,3 @@ body.header-sticky {
         grid-template-columns: 1fr;
     }
 }
-

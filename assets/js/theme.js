@@ -19,21 +19,18 @@
   }
 
   // Header sticky al hacer scroll
+  // MODIFICACIÓN: Simplificado para solo añadir/quitar la clase.
+  // La lógica de alturas y padding se maneja ahora puramente con CSS.
   var header = document.querySelector('.ge-header');
   if (header) {
-    var topbarHeight = document.querySelector('.ge-topbar') ? document.querySelector('.ge-topbar').offsetHeight : 0;
-    var mainHeaderHeight = document.querySelector('.ge-main-header') ? document.querySelector('.ge-main-header').offsetHeight : 0;
-    var totalHeaderHeight = topbarHeight + mainHeaderHeight;
-
-    document.body.style.setProperty('--ge-header-height', totalHeaderHeight + 'px');
-
+    // Escuchador de scroll para activar/desactivar el estado sticky
     window.addEventListener('scroll', function() {
-      if (window.pageYOffset > 150) {
+      if (window.pageYOffset > 150) { // Se activa después de 150px de scroll
         document.body.classList.add('header-sticky');
       } else {
         document.body.classList.remove('header-sticky');
       }
-    });
+    }, { passive: true }); // Mejora de rendimiento
   }
 
   // Inicialización del Slider Hero
@@ -61,4 +58,3 @@
   }
 
 })();
-
