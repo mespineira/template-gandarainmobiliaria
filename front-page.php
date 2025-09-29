@@ -2,22 +2,59 @@
 /* Template Name: Portada */
 get_header();
 
-$hero_img_id = ge_opt('ge_hero_image', '');
-$hero_url = $hero_img_id ? wp_get_attachment_image_url( $hero_img_id, 'full' ) : get_template_directory_uri() . '/assets/images/hero-default.jpg';
+// Recopilamos los slides desde el personalizador
+$slides = [];
+for ( $i = 1; $i <= 5; $i++ ) {
+    $img_id = ge_opt("ge_hero_slide_image_$i");
+    if ( $img_id ) {
+        $slides[] = [
+            'image_url' => wp_get_attachment_image_url($img_id, 'hero-slide'),
+            'title' => ge_opt("ge_hero_slide_title_$i"),
+            'subtitle' => ge_opt("ge_hero_slide_subtitle_$i"),
+        ];
+    }
+}
 ?>
-<section class="ge-hero" style="background-image:url('<?php echo esc_url($hero_url); ?>')">
-	<div class="ge-hero__overlay"></div>
-	<div class="ge-hero__inner ge-container">
-		<h1><?php echo esc_html( ge_opt('ge_hero_heading', '') ); ?></h1>
-		
-		<div class="ge-hero__search">
-			<?php 
-			// Integramos el buscador del plugin directamente en la sección hero.
-			// Este shortcode debe ser el del formulario de búsqueda de tu plugin.
-			echo do_shortcode('[rep_filters]'); 
-			?>
-		</div>
-	</div>
+<section class="ge-hero">
+    <?php if (!empty($slides)): ?>
+    <div class="swiper ge-hero-slider">
+        <div class="swiper-wrapper">
+            <?php foreach ($slides as $slide) : ?>
+            <div class="swiper-slide" style="background-image:url('<?php echo esc_url($slide['image_url']); ?>')">
+                <div class="ge-hero__overlay"></div>
+                <div class="ge-hero__inner ge-container">
+                    <div class="ge-hero__text-content">
+                        <?php if (!empty($slide['title'])) : ?>
+                            <h1 class="ge-hero__title"><?php echo esc_html($slide['title']); ?></h1>
+                        <?php endif; ?>
+                        <?php if (!empty($slide['subtitle'])) : ?>
+                            <p class="ge-hero__subtitle"><?php echo esc_html($slide['subtitle']); ?></p>
+                        <?php endif; ?>
+                    </div>
+                    <div class="ge-hero__search">
+                        <?php echo do_shortcode('[rep_filters]'); ?>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <!-- Controles de Navegación -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+    <?php else: 
+        // Fallback si no hay slides configurados, muestra el buscador sobre un fondo genérico
+    ?>
+    <div class="ge-hero-fallback">
+        <div class="ge-hero__overlay"></div>
+        <div class="ge-hero__inner ge-container">
+             <div class="ge-hero__search">
+                <?php echo do_shortcode('[rep_filters]'); ?>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 </section>
 
 <section class="ge-section ge-container">
@@ -26,12 +63,11 @@ $hero_url = $hero_img_id ? wp_get_attachment_image_url( $hero_img_id, 'full' ) :
 		<a class="ge-link" href="<?php echo esc_url( get_post_type_archive_link('property') ); ?>"><?php esc_html_e('Ver todas', 'gandara-estate'); ?> →</a>
 	</header>
 	<?php 
-	// Shortcode para mostrar propiedades destacadas.
 	echo do_shortcode('[rep_list per_page="9" featured="1"]'); 
 	?>
 </section>
 
-<section class="ge-section ge-section--cta" style="background-image:url('<?php echo esc_url($hero_url); ?>')">
+<section class="ge-section ge-section--cta" style="background-image:url('<?php echo esc_url($slides[0]['image_url'] ?? get_template_directory_uri() . '/assets/images/hero-default.jpg'); ?>')">
     <div class="ge-hero__overlay"></div>
     <div class="ge-container ge-container--narrow">
         <h2>¿Quieres vender tu casa?</h2>
@@ -64,13 +100,7 @@ $hero_url = $hero_img_id ? wp_get_attachment_image_url( $hero_img_id, 'full' ) :
 </section>
 
 <?php 
-// Sección de Blog - Obtenemos las 3 últimas entradas
-$recent_posts = new WP_Query(array(
-    'post_type' => 'post',
-    'posts_per_page' => 3,
-    'ignore_sticky_posts' => 1
-));
-
+$recent_posts = new WP_Query(array( 'post_type' => 'post', 'posts_per_page' => 3, 'ignore_sticky_posts' => 1 ));
 if ($recent_posts->have_posts()) :
 ?>
 <section class="ge-section ge-section--light-bg">
@@ -103,3 +133,4 @@ wp_reset_postdata();
 ?>
 
 <?php get_footer(); ?>
+

@@ -25,6 +25,7 @@ add_action( 'after_setup_theme', function(){
 
 	// Tamaños de imagen personalizados
 	add_image_size( 'property-card', 600, 400, true );
+    add_image_size( 'hero-slide', 1920, 1080, true ); // Nuevo tamaño para el slider
 
     // Eliminar el recorte de la imagen del logo para evitar pixelación
     add_filter('get_custom_logo', function($html) {
@@ -37,9 +38,17 @@ add_action( 'after_setup_theme', function(){
  * Encolar Scripts y Estilos
  */
 add_action( 'wp_enqueue_scripts', function(){
-	wp_enqueue_style( 'gandara-theme-style', get_stylesheet_uri(), array(), '1.1.1' );
+	wp_enqueue_style( 'gandara-theme-style', get_stylesheet_uri(), array(), '1.1.2' );
 	wp_enqueue_style( 'gandara-fonts', 'https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap', array(), null );
-	wp_enqueue_script( 'gandara-theme', get_template_directory_uri() . '/assets/js/theme.js', array(), '1.1.1', true );
+	
+    // Encolar Swiper JS y CSS para el slider
+    if ( is_front_page() ) {
+        wp_enqueue_style( 'swiper-css', 'https://unpkg.com/swiper/swiper-bundle.min.css', array(), '8.4.5' );
+        wp_enqueue_script( 'swiper-js', 'https://unpkg.com/swiper/swiper-bundle.min.js', array(), '8.4.5', true );
+    }
+    
+    // JS principal del tema
+    wp_enqueue_script( 'gandara-theme', get_template_directory_uri() . '/assets/js/theme.js', array('jquery'), '1.1.2', true );
 } );
 
 /**
@@ -85,31 +94,47 @@ add_action( 'customize_register', function( $wp_customize ){
 	// Información de contacto
 	$wp_customize->add_setting( 'ge_phone', array('default' => '', 'sanitize_callback'=>'sanitize_text_field') );
 	$wp_customize->add_control( 'ge_phone', array('label'=>__('Teléfono principal','gandara-estate'),'section'=>'ge_brand','type'=>'text') );
-
 	$wp_customize->add_setting( 'ge_email', array('default' => '', 'sanitize_callback'=>'sanitize_email') );
 	$wp_customize->add_control( 'ge_email', array('label'=>__('Email de contacto','gandara-estate'),'section'=>'ge_brand','type'=>'email') );
-
 	$wp_customize->add_setting( 'ge_address', array('default' => '', 'sanitize_callback'=>'sanitize_text_field') );
     $wp_customize->add_control( 'ge_address', array('label'=>__('Dirección','gandara-estate'),'section'=>'ge_brand','type'=>'textarea') );
 
 	// Redes Sociales
 	$wp_customize->add_setting( 'ge_facebook', array('default' => '', 'sanitize_callback'=>'esc_url_raw') );
 	$wp_customize->add_control( 'ge_facebook', array('label'=>__('URL de Facebook','gandara-estate'),'section'=>'ge_brand','type'=>'url') );
-
 	$wp_customize->add_setting( 'ge_instagram', array('default' => '', 'sanitize_callback'=>'esc_url_raw') );
 	$wp_customize->add_control( 'ge_instagram', array('label'=>__('URL de Instagram','gandara-estate'),'section'=>'ge_brand','type'=>'url') );
-
 	$wp_customize->add_setting( 'ge_twitter', array('default' => '', 'sanitize_callback'=>'esc_url_raw') );
 	$wp_customize->add_control( 'ge_twitter', array('label'=>__('URL de Twitter','gandara-estate'),'section'=>'ge_brand','type'=>'url') );
 
-	// Hero Section
-	$wp_customize->add_setting( 'ge_hero_heading', array('default'=>'Encuentra la propiedad de tus sueños', 'sanitize_callback'=>'sanitize_text_field') );
-	$wp_customize->add_control( 'ge_hero_heading', array('label'=>__('Título hero','gandara-estate'),'section'=>'ge_brand','type'=>'text') );
+	// --- Nueva sección para el Slider Hero ---
+	$wp_customize->add_section( 'ge_hero_slider', array(
+		'title' => __( 'Slider de Portada', 'gandara-estate' ),
+		'priority' => 35
+	) );
 
-	$wp_customize->add_setting( 'ge_hero_image', array('default'=>'', 'sanitize_callback'=>'absint') );
-	$wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'ge_hero_image', array(
-		'label'=>__('Imagen de portada (hero)','gandara-estate'),'section'=>'ge_brand','mime_type'=>'image'
-	) ) );
+	for ( $i = 1; $i <= 5; $i++ ) {
+		// Imagen del Slide
+		$wp_customize->add_setting( "ge_hero_slide_image_$i", array('default'=>'', 'sanitize_callback'=>'absint') );
+		$wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, "ge_hero_slide_image_$i", array(
+			'label'=>__('Imagen del Slide ','gandara-estate') . $i,'section'=>'ge_hero_slider','mime_type'=>'image'
+		) ) );
+
+		// Título del Slide
+		$wp_customize->add_setting( "ge_hero_slide_title_$i", array('default'=>'', 'sanitize_callback'=>'sanitize_text_field') );
+		$wp_customize->add_control( "ge_hero_slide_title_$i", array(
+			'label'=>__('Título del Slide ','gandara-estate') . $i,'section'=>'ge_hero_slider','type'=>'text'
+		) );
+        
+        // Subtítulo del Slide
+        $wp_customize->add_setting( "ge_hero_slide_subtitle_$i", array('default'=>'', 'sanitize_callback'=>'sanitize_text_field') );
+		$wp_customize->add_control( "ge_hero_slide_subtitle_$i", array(
+			'label'=>__('Subtítulo del Slide ','gandara-estate') . $i,'section'=>'ge_hero_slider','type'=>'textarea'
+		) );
+	}
+    // Eliminamos las opciones antiguas para evitar confusión
+    $wp_customize->remove_control('ge_hero_heading');
+    $wp_customize->remove_control('ge_hero_image');
 
 	// Colores
 	$wp_customize->add_setting( 'ge_primary_color', array('default' => '#0e7b6c', 'sanitize_callback'=>'sanitize_hex_color') );
@@ -155,3 +180,4 @@ function ge_breadcrumbs(){
     }
 	echo '</nav>';
 }
+
