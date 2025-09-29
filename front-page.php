@@ -44,7 +44,7 @@ for ( $i = 1; $i <= 5; $i++ ) {
         <div class="swiper-pagination"></div>
     </div>
     <?php else: 
-        // Fallback si no hay slides configurados, muestra el buscador sobre un fondo genérico
+        // Fallback si no hay slides configurados
     ?>
     <div class="ge-hero-fallback" style="background-image:url('<?php echo get_template_directory_uri() . '/assets/images/hero-default.jpg'; ?>')">
         <div class="ge-hero__overlay"></div>
@@ -60,10 +60,10 @@ for ( $i = 1; $i <= 5; $i++ ) {
 <section class="ge-section ge-container">
 	<header class="ge-section__header">
 		<h2><?php esc_html_e('Propiedades destacadas', 'gandara-estate'); ?></h2>
-		<a class="ge-link" href="<?php echo esc_url( get_post_type_archive_link('property') ); ?>"><?php esc_html_e('Ver todas', 'gandara-estate'); ?> →</a>
 	</header>
 	<?php 
-	echo do_shortcode('[rep_list per_page="9" featured="1"]'); 
+	// Mostramos 9 propiedades y quitamos la paginación y el enlace "Ver todas"
+	echo do_shortcode('[rep_list per_page="9" pagination="false"]'); 
 	?>
 </section>
 
