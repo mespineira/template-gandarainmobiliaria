@@ -200,3 +200,113 @@ add_action('save_post', function($post_id){
         update_post_meta($post_id, '_ge_header_slogan', sanitize_text_field($_POST['ge_header_slogan']));
     }
 });
+
+/**
+ * =========================================================================
+ * SOLUCIÓN COMPLETA PARA SHORTCODES DE SERVICIOS (VERSIÓN CORREGIDA)
+ * =========================================================================
+ *
+ * Parte 1: Funciones de Shortcode
+ * Parte 2: Filtros para limpiar el formato automático de WordPress (wpautop)
+ *
+ */
+
+
+/*
+ * ------------------------------------------------------------------------
+ * PARTE 1: Las funciones de shortcode
+ * ------------------------------------------------------------------------
+ */
+
+/**
+ * 1. El shortcode "padre" que crea la cuadrícula [ge_services_grid]
+ *
+ * Esta función ahora incluye una limpieza interna (preg_replace)
+ * para eliminar los <p></p> que se cuelan *entre* los items.
+ */
+function ge_services_grid_shortcode( $atts, $content = null ) {
+    
+    // Procesa los shortcodes anidados (los items)
+    $content = do_shortcode( $content );
+    
+    // --- INICIO DE LIMPIEZA INTERNA ---
+    // Limpiamos CUALQUIER etiqueta <p> vacía o <br> que
+    // WordPress haya podido añadir ENTRE los items.
+    $content = preg_replace( '#<p>\s*</p>#i', '', $content );
+    $content = str_replace( array( '<br />', '<br>' ), '', $content );
+    // --- FIN DE LIMPIEZA INTERNA ---
+    
+    // Devuelve el HTML de la cuadrícula
+    return '<div class="ge-services-grid">' . trim($content) . '</div>';
+}
+add_shortcode( 'ge_services_grid', 'ge_services_grid_shortcode' );
+
+
+/**
+ * 2. El shortcode "hijo" para cada tarjeta de servicio [ge_service_item]
+ *
+ * Esta función se mantiene igual: coge el texto plano y le da formato HTML.
+ */
+function ge_service_item_shortcode( $atts, $content = null ) {
+    
+    $a = shortcode_atts( array(
+        'fa_icon' => 'fa-solid fa-star',
+        'title'   => 'Título del Servicio',
+    ), $atts );
+    
+    // wpautop es CORRECTO aquí, porque queremos formatear la descripción
+    $content = wpautop( trim( $content ) );
+
+    $html = '<div class="ge-service-item">';
+    $html .= '<div class="ge-service-item__icon"><i class="' . esc_attr( $a['fa_icon'] ) . '"></i></div>';
+    
+    // --- INICIO DE LA CORRECCIÓN DEL ERROR CRÍTICO ---
+    // La etiqueta </h3> debe estar FUERA de esc_html()
+    $html .= '<h3 class="ge-service-item__title">' . esc_html( $a['title'] ) . '</h3>';
+    // --- FIN DE LA CORRECCIÓN DEL ERROR CRÍTICO ---
+    
+    $html .= $content; // El contenido (descripción)
+    $html .= '</div>';
+    
+    return $html;
+}
+add_shortcode( 'ge_service_item', 'ge_service_item_shortcode' );
+
+
+/*
+ * ------------------------------------------------------------------------
+ * PARTE 2: Filtros de limpieza para wpautop
+ * ------------------------------------------------------------------------
+ *
+ * Esto evita que WordPress envuelva nuestros shortcodes en etiquetas <p>
+ * (Ej: <p>[ge_services_grid]</p>), lo que rompe el HTML.
+ */
+function ge_clean_shortcode_wpautop( $content ) {
+    
+    // Nuestros shortcodes que devuelven <div>s
+    $shortcodes = array( 
+        'ge_services_grid', 
+        'ge_service_item'
+    );
+
+    foreach ( $shortcodes as $shortcode ) {
+        // Expresión regular para buscar <p>[shortcode...]
+        $pattern_open = '#<p>\s*(\[' . $shortcode . '.*?\])#i';
+        // Expresión regular para buscar [/shortcode]</p>
+        $pattern_close = '#(\[/' . $shortcode . '\])\s*</p>#i';
+        // Expresión regular para buscar <p>[shortcode...]</p> (shortcodes sin contenido)
+        $pattern_single = '#<p>\s*(\[' . $shortcode . '.*?\])\s*</p>#i';
+
+        // Reemplazamos
+        $content = preg_replace( $pattern_open, '$1', $content );
+        $content = preg_replace( $pattern_close, '$1', $content );
+        $content = preg_replace( $pattern_single, '$1', $content );
+    }
+    
+    return $content;
+}
+
+// Ejecutamos nuestro filtro DESPUÉS de wpautop (prioridad 10)
+add_filter( 'the_content', 'ge_clean_shortcode_wpautop', 11 );
+// También en el filtro 'widget_text_content' por si usas los shortcodes en widgets
+add_filter( 'widget_text_content', 'ge_clean_shortcode_wpautop', 11 );
